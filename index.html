@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Peaks</title>
+<meta name="theme-color" content="#1b3a2b" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="icons/icon.svg" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<header class="app-header">
+  <h1>Peaks</h1>
+  <div class="header-actions">
+    <span id="peak-count" class="peak-count"></span>
+  </div>
+</header>
+
+<main id="view-list" class="view view-active">
+  <div class="toolbar">
+    <label class="toolbar-field">
+      <span>Sort</span>
+      <select id="sort-select">
+        <option value="name">Name</option>
+        <option value="height">Height (highest first)</option>
+        <option value="relevance">Relevance</option>
+        <option value="distance">Proximity (nearest first)</option>
+        <option value="visited">Visited date</option>
+      </select>
+    </label>
+    <label class="toolbar-field">
+      <span>Show</span>
+      <select id="filter-select">
+        <option value="all">All peaks</option>
+        <option value="visited">Visited</option>
+        <option value="unvisited">Not visited</option>
+      </select>
+    </label>
+  </div>
+  <div id="distance-hint" class="hint hidden"></div>
+  <ul id="peak-list" class="peak-list"></ul>
+</main>
+
+<main id="view-map" class="view">
+  <div id="map"></div>
+  <div class="map-legend">
+    <span><i class="dot dot-green"></i> Visited</span>
+    <span><i class="dot dot-red"></i> Not visited</span>
+  </div>
+</main>
+
+<main id="view-add" class="view">
+  <form id="add-form" class="peak-form">
+    <h2>Add a peak</h2>
+
+    <label class="form-field">
+      <span>Name *</span>
+      <input type="text" id="f-name" required placeholder="e.g. Ben Nevis" />
+    </label>
+
+    <label class="form-field">
+      <span>Relevance</span>
+      <input type="text" id="f-relevance" placeholder="e.g. Scotland Top" />
+    </label>
+
+    <label class="form-field">
+      <span>Height (m)</span>
+      <input type="number" id="f-height" step="1" placeholder="e.g. 1345" />
+    </label>
+
+    <label class="form-field">
+      <span>Grid reference (OS, optional)</span>
+      <input type="text" id="f-gridref" placeholder="e.g. NN166712" />
+    </label>
+
+    <div class="form-row">
+      <label class="form-field">
+        <span>Latitude</span>
+        <input type="number" id="f-lat" step="0.000001" placeholder="auto from grid ref" />
+      </label>
+      <label class="form-field">
+        <span>Longitude</span>
+        <input type="number" id="f-lon" step="0.000001" placeholder="auto from grid ref" />
+      </label>
+    </div>
+    <button type="button" id="f-use-location" class="btn-secondary">Use my current location</button>
+
+    <label class="form-field">
+      <span>Notes</span>
+      <textarea id="f-notes" rows="3" placeholder="Optional notes"></textarea>
+    </label>
+
+    <label class="form-check">
+      <input type="checkbox" id="f-visited" />
+      <span>I've visited this peak</span>
+    </label>
+
+    <label class="form-field" id="f-visitedat-wrap">
+      <span>Date / time of visit</span>
+      <input type="datetime-local" id="f-visitedat" />
+    </label>
+
+    <button type="submit" class="btn-primary">Add peak</button>
+  </form>
+</main>
+
+<div id="detail-sheet" class="sheet hidden">
+  <div class="sheet-content">
+    <button type="button" id="sheet-close" class="sheet-close" aria-label="Close">&times;</button>
+    <h2 id="d-name"></h2>
+    <p id="d-relevance" class="d-relevance"></p>
+    <dl class="d-grid">
+      <div><dt>Height</dt><dd id="d-height"></dd></div>
+      <div><dt>Grid ref</dt><dd id="d-gridref"></dd></div>
+      <div><dt>Lat / Lon</dt><dd id="d-latlon"></dd></div>
+      <div><dt>Status</dt><dd id="d-status"></dd></div>
+    </dl>
+
+    <label class="form-field">
+      <span>Notes</span>
+      <textarea id="d-notes" rows="3"></textarea>
+    </label>
+
+    <label class="form-check">
+      <input type="checkbox" id="d-visited" />
+      <span>Visited</span>
+    </label>
+    <label class="form-field" id="d-visitedat-wrap">
+      <span>Date / time of visit</span>
+      <input type="datetime-local" id="d-visitedat" />
+    </label>
+
+    <div class="sheet-actions">
+      <button type="button" id="d-save" class="btn-primary">Save</button>
+      <button type="button" id="d-delete" class="btn-danger">Delete peak</button>
+    </div>
+  </div>
+</div>
+
+<nav class="tab-bar">
+  <button type="button" class="tab-btn tab-active" data-view="list">List</button>
+  <button type="button" class="tab-btn" data-view="map">Map</button>
+  <button type="button" class="tab-btn" data-view="add">Add</button>
+</nav>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="js/osgb.js"></script>
+<script src="js/seed.js"></script>
+<script src="js/db.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

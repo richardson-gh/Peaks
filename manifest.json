@@ -1,0 +1,14 @@
+{
+  "name": "Peaks",
+  "short_name": "Peaks",
+  "description": "Record the peaks you've visited, with a map of visited and unvisited summits.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#12140f",
+  "theme_color": "#1b3a2b",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
