@@ -2,9 +2,10 @@
  * IndexedDB wrapper for the peaks database.
  *
  * Each peak has a `collections` array (a peak may belong to more than one
- * collection). On first run, the default collections (data/*.json) are
- * imported automatically. Users can also import additional collections,
- * or import/export a full database backup, at any time.
+ * collection). Nothing is seeded automatically: on an empty database the
+ * app prompts the user to choose which bundled collections (data/*.json)
+ * to add. Users can also import additional collections, or import/export
+ * a full database backup, at any time.
  */
 (function (global) {
   'use strict';
@@ -17,6 +18,7 @@
     { name: 'English county tops', file: 'data/english-county-tops.json' },
     { name: 'Welsh county tops', file: 'data/welsh-county-tops.json' },
     { name: 'Scottish county tops', file: 'data/scottish-county-tops.json' },
+    { name: 'Munro mountains', file: 'data/munro-mountains.json' },
   ];
 
   const MATCH_RADIUS_KM = 0.2;
@@ -130,6 +132,27 @@
     );
   }
 
+  // Remove a collection: peaks that belong only to it are deleted; peaks
+  // that also belong to other collections just lose this collection's tag.
+  async function deleteCollection(name) {
+    const all = await getAll();
+    let deleted = 0;
+    let updated = 0;
+    for (const peak of all) {
+      if (!Array.isArray(peak.collections) || !peak.collections.includes(name)) continue;
+      const remaining = peak.collections.filter((c) => c !== name);
+      if (remaining.length === 0) {
+        await remove(peak.id);
+        deleted++;
+      } else {
+        peak.collections = remaining;
+        await put(peak);
+        updated++;
+      }
+    }
+    return { deleted, updated };
+  }
+
   // Find an existing peak representing the same real-world summit as
   // `incoming`. Requires a matching grid reference, or coordinates within
   // MATCH_RADIUS_KM of each other — matching on name alone is unsafe, since
@@ -226,19 +249,6 @@
     return DEFAULT_COLLECTIONS.map((c) => ({ ...c }));
   }
 
-  async function ensureDefaultCollectionsSeeded() {
-    const existing = await getAll();
-    const known = new Set(existing.flatMap((p) => p.collections || []));
-    for (const { name } of DEFAULT_COLLECTIONS) {
-      if (known.has(name)) continue;
-      try {
-        await importBundledCollection(name);
-      } catch (err) {
-        console.error(`Failed to load default collection "${name}"`, err);
-      }
-    }
-  }
-
   async function exportDatabase() {
     const all = await getAll();
     return {
@@ -307,10 +317,10 @@
     put,
     remove,
     clear,
+    deleteCollection,
     importCollection,
     importBundledCollection,
     listBundledCollections,
-    ensureDefaultCollectionsSeeded,
     exportDatabase,
     importDatabase,
   };

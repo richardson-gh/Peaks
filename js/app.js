@@ -28,7 +28,7 @@
   }
 
   function osMapsUrl(lat, lon) {
-    return `https://osmaps.ordnancesurvey.co.uk/${lat},${lon},17`;
+    return `https://explore.osmaps.com/?lat=${lat}&lon=${lon}&zoom=17`;
   }
 
   function parseCollectionsInput(text) {
@@ -44,9 +44,59 @@
     peaks = await PeaksDB.getAll();
     renderCount();
     renderCollectionOptions();
+    renderOnboarding();
     renderList();
     renderMapMarkers();
     renderBundledCollections();
+    renderManageCollections();
+  }
+
+  // ---------- Onboarding (first run, empty database) ----------
+
+  const ONBOARDING_DISMISSED_KEY = 'peaks-onboarding-dismissed';
+
+  function renderOnboarding() {
+    const showOnboarding = peaks.length === 0 && !localStorage.getItem(ONBOARDING_DISMISSED_KEY);
+    el('onboarding').classList.toggle('hidden', !showOnboarding);
+    document.querySelector('#view-list .toolbar').classList.toggle('hidden', showOnboarding);
+    el('peak-list').classList.toggle('hidden', showOnboarding);
+    if (!showOnboarding) return;
+
+    const listEl = el('onboarding-collections-list');
+    listEl.innerHTML = '';
+    PeaksDB.listBundledCollections().forEach(({ name }) => {
+      const li = document.createElement('li');
+      li.className = 'onboarding-item';
+      const label = document.createElement('label');
+      label.className = 'form-check';
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.value = name;
+      checkbox.checked = true;
+      const span = document.createElement('span');
+      span.textContent = name;
+      label.appendChild(checkbox);
+      label.appendChild(span);
+      li.appendChild(label);
+      listEl.appendChild(li);
+    });
+  }
+
+  async function handleOnboardingAdd() {
+    const checked = Array.from(document.querySelectorAll('#onboarding-collections-list input:checked')).map((cb) => cb.value);
+    for (const name of checked) {
+      try {
+        await PeaksDB.importBundledCollection(name);
+      } catch (err) {
+        console.error(`Failed to import "${name}"`, err);
+      }
+    }
+    await loadPeaks();
+  }
+
+  function handleOnboardingSkip() {
+    localStorage.setItem(ONBOARDING_DISMISSED_KEY, '1');
+    renderOnboarding();
   }
 
   function renderCount() {
@@ -413,6 +463,62 @@
     if (row) row.querySelector('.hint').textContent = message;
   }
 
+  // ---------- Data: manage / delete collections ----------
+
+  function renderManageCollections() {
+    const listEl = el('manage-collections-list');
+    if (!listEl) return;
+    const counts = {};
+    peaks.forEach((p) => (p.collections || []).forEach((c) => (counts[c] = (counts[c] || 0) + 1)));
+    const names = Object.keys(counts).sort((a, b) => a.localeCompare(b));
+    listEl.innerHTML = '';
+
+    if (names.length === 0) {
+      const li = document.createElement('li');
+      li.className = 'hint';
+      li.textContent = 'No collections yet.';
+      listEl.appendChild(li);
+      return;
+    }
+
+    names.forEach((name) => {
+      const count = counts[name];
+      const li = document.createElement('li');
+      li.className = 'bundled-item';
+
+      const info = document.createElement('div');
+      info.className = 'bundled-info';
+      const title = document.createElement('div');
+      title.className = 'bundled-name';
+      title.textContent = name;
+      const status = document.createElement('div');
+      status.className = 'hint';
+      status.textContent = `${count} peak${count === 1 ? '' : 's'}`;
+      info.appendChild(title);
+      info.appendChild(status);
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'btn-danger';
+      btn.textContent = 'Delete collection';
+      btn.addEventListener('click', () => handleDeleteCollection(name));
+
+      li.appendChild(info);
+      li.appendChild(btn);
+      listEl.appendChild(li);
+    });
+  }
+
+  async function handleDeleteCollection(name) {
+    const confirmed = confirm(
+      `Delete the collection "${name}"? Peaks only in this collection will be removed entirely; peaks also in other collections will just be untagged.`
+    );
+    if (!confirmed) return;
+    const result = await PeaksDB.deleteCollection(name);
+    await loadPeaks();
+    el('manage-collections-status').textContent = `"${name}": removed ${result.deleted} peak(s), untagged ${result.updated} peak(s) still in other collections.`;
+  }
+
   // ---------- Data: export ----------
 
   async function exportDatabase() {
@@ -523,8 +629,13 @@
   // ---------- Init ----------
 
   async function init() {
-    await PeaksDB.ensureDefaultCollectionsSeeded();
     await loadPeaks();
+
+    el('onboarding-add-btn').addEventListener('click', handleOnboardingAdd);
+    el('onboarding-skip-btn').addEventListener('click', handleOnboardingSkip);
+    el('show-standard-collections-btn').addEventListener('click', () => {
+      el('bundled-collections-list').classList.toggle('hidden');
+    });
 
     document.querySelectorAll('.tab-btn').forEach((btn) => {
       btn.addEventListener('click', () => switchView(btn.dataset.view));

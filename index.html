@@ -21,6 +21,13 @@
 </header>
 
 <main id="view-list" class="view view-active">
+  <div id="onboarding" class="onboarding hidden">
+    <h2>Choose your starting collections</h2>
+    <p class="hint">Pick any of these to add now — you can add more later from the Data tab, or add peaks individually from the Add tab.</p>
+    <ul id="onboarding-collections-list" class="onboarding-list"></ul>
+    <button type="button" id="onboarding-add-btn" class="btn-primary">Add selected collections</button>
+    <button type="button" id="onboarding-skip-btn" class="btn-secondary">Skip, start empty</button>
+  </div>
   <div class="toolbar">
     <label class="toolbar-field">
       <span>Sort</span>
@@ -121,12 +128,6 @@
 
 <main id="view-data" class="view">
   <section class="data-section">
-    <h2>Bundled collections</h2>
-    <p class="hint">These ship with the app, so you can add them straight in — no file needed.</p>
-    <ul id="bundled-collections-list" class="bundled-list"></ul>
-  </section>
-
-  <section class="data-section">
     <h2>Export</h2>
     <p class="hint">Download every peak in this device's database (including notes and visited status) as a JSON backup file.</p>
     <button type="button" id="export-db-btn" class="btn-secondary">Download backup (.json)</button>
@@ -148,8 +149,17 @@
   <section class="data-section">
     <h2>Import a collection</h2>
     <p class="hint">Add a peak collection (name, height, grid reference) from a JSON file. Peaks matching ones you already have are tagged with the new collection rather than duplicated.</p>
+    <button type="button" id="show-standard-collections-btn" class="btn-secondary">Choose from standard collections</button>
+    <ul id="bundled-collections-list" class="bundled-list hidden"></ul>
     <input type="file" id="import-collection-file" accept="application/json" />
     <p id="import-collection-status" class="hint"></p>
+  </section>
+
+  <section class="data-section">
+    <h2>Manage collections</h2>
+    <p class="hint">Delete a collection. Peaks that also belong to another collection are kept (just untagged); peaks that belong only to this one are removed entirely.</p>
+    <ul id="manage-collections-list" class="bundled-list"></ul>
+    <p id="manage-collections-status" class="hint"></p>
   </section>
 </main>
 
