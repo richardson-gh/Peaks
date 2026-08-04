@@ -304,11 +304,13 @@ main.view-active { display: flex; flex-direction: column; }
   z-index: 800;
   display: flex;
   align-items: flex-end;
+  justify-content: center;
 }
 .sheet.hidden { display: none; }
 .sheet-content {
   background: var(--bg);
   width: 100%;
+  max-width: 480px;
   max-height: 88vh;
   overflow-y: auto;
   border-radius: 16px 16px 0 0;
