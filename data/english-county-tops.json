@@ -1,0 +1,390 @@
+{
+  "collection": "English county tops",
+  "source": "https://en.wikipedia.org/wiki/List_of_ceremonial_counties_of_England_by_highest_point",
+  "peaks": [
+    {
+      "name": "Scafell Pike",
+      "relevance": "Cumbria Top",
+      "height": 978,
+      "gridRef": "NY215072",
+      "lat": 54.454098,
+      "lon": -3.212285
+    },
+    {
+      "name": "The Cheviot",
+      "relevance": "Northumberland Top",
+      "height": 815,
+      "gridRef": "NT909205",
+      "lat": 55.478231,
+      "lon": -2.145525
+    },
+    {
+      "name": "Mickle Fell",
+      "relevance": "Durham Top",
+      "height": 788,
+      "gridRef": "NY805245",
+      "lat": 54.615273,
+      "lon": -2.303463
+    },
+    {
+      "name": "Whernside",
+      "relevance": "North Yorkshire Top",
+      "height": 736,
+      "gridRef": "SD738814",
+      "lat": 54.227637,
+      "lon": -2.403382
+    },
+    {
+      "name": "Black Mountain",
+      "relevance": "Herefordshire Top",
+      "height": 703,
+      "gridRef": "SO255350",
+      "lat": 52.008412,
+      "lon": -3.086804
+    },
+    {
+      "name": "Kinder Scout",
+      "relevance": "Derbyshire Top",
+      "height": 636,
+      "gridRef": "SK085875",
+      "lat": 53.384279,
+      "lon": -1.873673
+    },
+    {
+      "name": "Green Hill",
+      "relevance": "Lancashire Top",
+      "height": 628,
+      "gridRef": "SD701820",
+      "lat": 54.232826,
+      "lon": -2.460194
+    },
+    {
+      "name": "High Willhays",
+      "relevance": "Devon Top",
+      "height": 621,
+      "gridRef": "SX580892",
+      "lat": 50.685079,
+      "lon": -4.011478
+    },
+    {
+      "name": "Black Hill",
+      "relevance": "West Yorkshire Top",
+      "height": 582,
+      "gridRef": "SE078046",
+      "lat": 53.537992,
+      "lon": -1.883779
+    },
+    {
+      "name": "Shining Tor",
+      "relevance": "Cheshire Top",
+      "height": 559,
+      "gridRef": "SJ994737",
+      "lat": 53.260301,
+      "lon": -2.010454
+    },
+    {
+      "name": "High Stones",
+      "relevance": "South Yorkshire Top",
+      "height": 548,
+      "gridRef": "SK188943",
+      "lat": 53.445136,
+      "lon": -1.718419
+    },
+    {
+      "name": "Black Chew Head",
+      "relevance": "Greater Manchester Top",
+      "height": 542,
+      "gridRef": "SE056019",
+      "lat": 53.513751,
+      "lon": -1.917022
+    },
+    {
+      "name": "Brown Clee Hill",
+      "relevance": "Shropshire Top",
+      "height": 540,
+      "gridRef": "SO593865",
+      "lat": 52.474903,
+      "lon": -2.600633
+    },
+    {
+      "name": "Cheeks Hill",
+      "relevance": "Staffordshire Top",
+      "height": 520,
+      "gridRef": "SK026699",
+      "lat": 53.226139,
+      "lon": -1.962513
+    },
+    {
+      "name": "Dunkery Beacon",
+      "relevance": "Somerset Top",
+      "height": 519,
+      "gridRef": "SS891415",
+      "lat": 51.161965,
+      "lon": -3.587361
+    },
+    {
+      "name": "Worcestershire Beacon",
+      "relevance": "Worcestershire Top",
+      "height": 425,
+      "gridRef": "SO768452",
+      "lat": 52.104641,
+      "lon": -2.340139
+    },
+    {
+      "name": "Brown Willy",
+      "relevance": "Cornwall Top",
+      "height": 420,
+      "gridRef": "SX158800",
+      "lat": 50.590597,
+      "lon": -4.603692
+    },
+    {
+      "name": "Cleeve Hill",
+      "relevance": "Gloucestershire Top",
+      "height": 330,
+      "gridRef": "SO996245",
+      "lat": 51.919025,
+      "lon": -2.007223
+    },
+    {
+      "name": "Walbury Hill",
+      "relevance": "Berkshire Top",
+      "height": 297,
+      "gridRef": "SU373616",
+      "lat": 51.352258,
+      "lon": -1.465765
+    },
+    {
+      "name": "Leith Hill",
+      "relevance": "Surrey Top",
+      "height": 295,
+      "gridRef": "TQ139431",
+      "lat": 51.175803,
+      "lon": -0.372006
+    },
+    {
+      "name": "Milk Hill",
+      "relevance": "Wiltshire Top",
+      "height": 294,
+      "gridRef": "SU104643",
+      "lat": 51.377659,
+      "lon": -1.851963
+    },
+    {
+      "name": "Pilot Hill",
+      "relevance": "Hampshire Top",
+      "height": 286,
+      "gridRef": "SU398601",
+      "lat": 51.338602,
+      "lon": -1.430035
+    },
+    {
+      "name": "Black Down",
+      "relevance": "West Sussex Top",
+      "height": 280,
+      "gridRef": "SU919296",
+      "lat": 51.058397,
+      "lon": -0.69006
+    },
+    {
+      "name": "Lewesdon Hill",
+      "relevance": "Dorset Top",
+      "height": 279,
+      "gridRef": "ST437011",
+      "lat": 50.806705,
+      "lon": -2.800376
+    },
+    {
+      "name": "Bardon Hill",
+      "relevance": "Leicestershire Top",
+      "height": 278,
+      "gridRef": "SK459131",
+      "lat": 52.713621,
+      "lon": -1.321993
+    },
+    {
+      "name": "Turners Hill",
+      "relevance": "West Midlands Top",
+      "height": 271,
+      "gridRef": "SO967887",
+      "lat": 52.496196,
+      "lon": -2.050037
+    },
+    {
+      "name": "Haddington Hill",
+      "relevance": "Buckinghamshire Top",
+      "height": 267,
+      "gridRef": "SP890090",
+      "lat": 51.772608,
+      "lon": -0.711519
+    },
+    {
+      "name": "Whitehorse Hill",
+      "relevance": "Oxfordshire Top",
+      "height": 261,
+      "gridRef": "SU300863",
+      "lat": 51.574773,
+      "lon": -1.5685
+    },
+    {
+      "name": "Ebrington Hill",
+      "relevance": "Warwickshire Top",
+      "height": 261,
+      "gridRef": "SP187426",
+      "lat": 52.081445,
+      "lon": -1.728532
+    },
+    {
+      "name": "Currock Hill",
+      "relevance": "Tyne and Wear Top",
+      "height": 259,
+      "gridRef": "NZ107592",
+      "lat": 54.927373,
+      "lon": -1.834566
+    },
+    {
+      "name": "Betsom's Hill",
+      "relevance": "Kent Top",
+      "height": 251,
+      "gridRef": "TQ435563",
+      "lat": 51.287764,
+      "lon": 0.056451
+    },
+    {
+      "name": "Ditchling Beacon",
+      "relevance": "East Sussex Top",
+      "height": 248,
+      "gridRef": "TQ331130",
+      "lat": 50.901144,
+      "lon": -0.108543
+    },
+    {
+      "name": "Bishop Wilton Wold",
+      "relevance": "East Riding of Yorkshire Top",
+      "height": 246,
+      "gridRef": "SE821570",
+      "lat": 54.002512,
+      "lon": -0.748933
+    },
+    {
+      "name": "Westerham Heights",
+      "relevance": "Greater London Top",
+      "height": 245,
+      "gridRef": "TQ436564",
+      "lat": 51.288637,
+      "lon": 0.057924
+    },
+    {
+      "name": "Pavis Wood",
+      "relevance": "Hertfordshire Top",
+      "height": 244,
+      "gridRef": "SP914091",
+      "lat": 51.77312,
+      "lon": -0.676719
+    },
+    {
+      "name": "Dunstable Downs",
+      "relevance": "Bedfordshire Top",
+      "height": 243,
+      "gridRef": "TL008194",
+      "lat": 51.864085,
+      "lon": -0.537534
+    },
+    {
+      "name": "St Boniface Down",
+      "relevance": "Isle of Wight Top",
+      "height": 241,
+      "gridRef": "SZ569785",
+      "lat": 50.603454,
+      "lon": -1.197321
+    },
+    {
+      "name": "Arbury Hill",
+      "relevance": "Northamptonshire Top",
+      "height": 225,
+      "gridRef": "SP540587",
+      "lat": 52.223867,
+      "lon": -1.210894
+    },
+    {
+      "name": "Newtonwood Lane",
+      "relevance": "Nottinghamshire Top",
+      "height": 204,
+      "gridRef": "SK456606",
+      "lat": 53.140607,
+      "lon": -1.319776
+    },
+    {
+      "name": "Cold Overton Park",
+      "relevance": "Rutland Top",
+      "height": 197,
+      "gridRef": "SK827085",
+      "lat": 52.667914,
+      "lon": -0.778512
+    },
+    {
+      "name": "Billinge Hill",
+      "relevance": "Merseyside Top",
+      "height": 179,
+      "gridRef": "SD525014",
+      "lat": 53.50713,
+      "lon": -2.717663
+    },
+    {
+      "name": "Normanby le Wold Top",
+      "relevance": "Lincolnshire Top",
+      "height": 168,
+      "gridRef": "TF121964",
+      "lat": 53.452442,
+      "lon": -0.313364
+    },
+    {
+      "name": "Dundry Hill",
+      "relevance": "Bristol Top",
+      "height": 160,
+      "gridRef": "ST593668",
+      "lat": 51.398763,
+      "lon": -2.586426
+    },
+    {
+      "name": "Chrishall Common",
+      "relevance": "Essex Top",
+      "height": 147,
+      "gridRef": "TL443362",
+      "lat": 52.005486,
+      "lon": 0.100848
+    },
+    {
+      "name": "Great Chishill",
+      "relevance": "Cambridgeshire Top",
+      "height": 146,
+      "gridRef": "TL427386",
+      "lat": 52.027463,
+      "lon": 0.078554
+    },
+    {
+      "name": "Great Wood Hill",
+      "relevance": "Suffolk Top",
+      "height": 128,
+      "gridRef": "TL786558",
+      "lat": 52.171554,
+      "lon": 0.610306
+    },
+    {
+      "name": "Beacon Hill",
+      "relevance": "Norfolk Top",
+      "height": 103,
+      "gridRef": "TG183414",
+      "lat": 52.925611,
+      "lon": 1.246203
+    },
+    {
+      "name": "High Holborn",
+      "relevance": "City of London Top",
+      "height": 22,
+      "gridRef": "TQ310816",
+      "lat": 51.518139,
+      "lon": -0.11336
+    }
+  ]
+}

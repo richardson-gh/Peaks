@@ -67,11 +67,12 @@ main.view-active { display: flex; flex-direction: column; }
 
 .toolbar {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
   margin-bottom: 10px;
 }
 .toolbar-field {
-  flex: 1;
+  flex: 1 1 140px;
   display: flex;
   flex-direction: column;
   font-size: 0.75rem;
@@ -215,6 +216,42 @@ main.view-active { display: flex; flex-direction: column; }
 .btn-primary { background: var(--brand); color: white; }
 .btn-secondary { background: var(--surface); color: var(--brand-light); border: 1px solid var(--border); }
 .btn-danger { background: transparent; color: var(--red); border: 1px solid var(--red); }
+
+.map-links {
+  display: flex;
+  gap: 16px;
+  font-size: 0.85rem;
+}
+.map-links a { color: var(--brand-light); font-weight: 600; }
+.map-links a.disabled { color: var(--text-muted); pointer-events: none; }
+
+.d-status {
+  margin: -4px 0 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.data-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 12px;
+}
+.data-section h2 { margin: 0 0 6px; font-size: 1.05rem; }
+.data-section input[type="file"] {
+  display: block;
+  margin: 8px 0;
+  font-size: 0.9rem;
+  color: var(--text);
+}
+.import-choice {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.import-choice p { margin: 0; font-size: 0.85rem; color: var(--text-muted); }
 
 .tab-bar {
   position: fixed;

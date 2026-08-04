@@ -40,6 +40,12 @@
         <option value="unvisited">Not visited</option>
       </select>
     </label>
+    <label class="toolbar-field">
+      <span>Collection</span>
+      <select id="collection-select">
+        <option value="all">All collections</option>
+      </select>
+    </label>
   </div>
   <div id="distance-hint" class="hint hidden"></div>
   <ul id="peak-list" class="peak-list"></ul>
@@ -90,6 +96,11 @@
     <button type="button" id="f-use-location" class="btn-secondary">Use my current location</button>
 
     <label class="form-field">
+      <span>Collections (comma-separated, optional)</span>
+      <input type="text" id="f-collections" placeholder="e.g. Scotland Munros" />
+    </label>
+
+    <label class="form-field">
       <span>Notes</span>
       <textarea id="f-notes" rows="3" placeholder="Optional notes"></textarea>
     </label>
@@ -108,17 +119,83 @@
   </form>
 </main>
 
+<main id="view-data" class="view">
+  <section class="data-section">
+    <h2>Export</h2>
+    <p class="hint">Download every peak in this device's database (including notes and visited status) as a JSON backup file.</p>
+    <button type="button" id="export-db-btn" class="btn-secondary">Download backup (.json)</button>
+  </section>
+
+  <section class="data-section">
+    <h2>Import a database backup</h2>
+    <p class="hint">Restore a previously exported backup. You'll choose whether to overwrite everything or merge it into what's already here.</p>
+    <input type="file" id="import-db-file" accept="application/json" />
+    <div id="import-db-choice" class="import-choice hidden">
+      <p>Found <span id="import-db-count"></span> peaks in this file. What should happen?</p>
+      <button type="button" id="import-db-merge" class="btn-secondary">Merge into existing</button>
+      <button type="button" id="import-db-overwrite" class="btn-danger">Overwrite everything</button>
+      <button type="button" id="import-db-cancel" class="btn-secondary">Cancel</button>
+    </div>
+    <p id="import-db-status" class="hint"></p>
+  </section>
+
+  <section class="data-section">
+    <h2>Import a collection</h2>
+    <p class="hint">Add a peak collection (name, height, grid reference) from a JSON file. Peaks matching ones you already have are tagged with the new collection rather than duplicated.</p>
+    <input type="file" id="import-collection-file" accept="application/json" />
+    <p id="import-collection-status" class="hint"></p>
+  </section>
+</main>
+
 <div id="detail-sheet" class="sheet hidden">
   <div class="sheet-content">
     <button type="button" id="sheet-close" class="sheet-close" aria-label="Close">&times;</button>
-    <h2 id="d-name"></h2>
-    <p id="d-relevance" class="d-relevance"></p>
-    <dl class="d-grid">
-      <div><dt>Height</dt><dd id="d-height"></dd></div>
-      <div><dt>Grid ref</dt><dd id="d-gridref"></dd></div>
-      <div><dt>Lat / Lon</dt><dd id="d-latlon"></dd></div>
-      <div><dt>Status</dt><dd id="d-status"></dd></div>
-    </dl>
+    <h2>Edit peak</h2>
+
+    <label class="form-field">
+      <span>Name *</span>
+      <input type="text" id="d-name" required />
+    </label>
+
+    <label class="form-field">
+      <span>Relevance</span>
+      <input type="text" id="d-relevance" />
+    </label>
+
+    <div class="form-row">
+      <label class="form-field">
+        <span>Height (m)</span>
+        <input type="number" id="d-height" step="1" />
+      </label>
+      <label class="form-field">
+        <span>Grid reference</span>
+        <input type="text" id="d-gridref" />
+      </label>
+    </div>
+
+    <div class="form-row">
+      <label class="form-field">
+        <span>Latitude</span>
+        <input type="number" id="d-lat" step="0.000001" />
+      </label>
+      <label class="form-field">
+        <span>Longitude</span>
+        <input type="number" id="d-lon" step="0.000001" />
+      </label>
+    </div>
+    <button type="button" id="d-recalc" class="btn-secondary">Recalculate lat/lon from grid ref</button>
+
+    <div class="map-links">
+      <a id="d-google-maps-link" href="#" target="_blank" rel="noopener">Open in Google Maps</a>
+      <a id="d-os-maps-link" href="#" target="_blank" rel="noopener">Open in OS Maps</a>
+    </div>
+
+    <label class="form-field">
+      <span>Collections (comma-separated)</span>
+      <input type="text" id="d-collections" />
+    </label>
+
+    <p id="d-status" class="d-status"></p>
 
     <label class="form-field">
       <span>Notes</span>
@@ -145,11 +222,11 @@
   <button type="button" class="tab-btn tab-active" data-view="list">List</button>
   <button type="button" class="tab-btn" data-view="map">Map</button>
   <button type="button" class="tab-btn" data-view="add">Add</button>
+  <button type="button" class="tab-btn" data-view="data">Data</button>
 </nav>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="js/osgb.js"></script>
-<script src="js/seed.js"></script>
 <script src="js/db.js"></script>
 <script src="js/app.js"></script>
 </body>

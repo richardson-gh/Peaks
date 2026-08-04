@@ -1,0 +1,270 @@
+{
+  "collection": "Scottish county tops",
+  "source": "https://en.wikipedia.org/wiki/List_of_Scottish_counties_by_highest_point",
+  "peaks": [
+    {
+      "name": "Ben Nevis",
+      "relevance": "Inverness-shire Top",
+      "height": 1345,
+      "gridRef": "NN166712",
+      "lat": 56.796088,
+      "lon": -5.004712
+    },
+    {
+      "name": "Ben Macdhui",
+      "relevance": "Aberdeenshire Top",
+      "height": 1309,
+      "gridRef": "NN988989",
+      "lat": 57.069971,
+      "lon": -3.670714
+    },
+    {
+      "name": "Ben Macdhui",
+      "relevance": "Banffshire Top",
+      "height": 1309,
+      "gridRef": "NN988989",
+      "lat": 57.069971,
+      "lon": -3.670714
+    },
+    {
+      "name": "Ben Lawers",
+      "relevance": "Perthshire Top",
+      "height": 1214,
+      "gridRef": "NN635414",
+      "lat": 56.544702,
+      "lon": -4.221711
+    },
+    {
+      "name": "Carn Eige",
+      "relevance": "Ross and Cromarty Top",
+      "height": 1183,
+      "gridRef": "NH123261",
+      "lat": 57.28683,
+      "lon": -5.116004
+    },
+    {
+      "name": "Bidean nam Bian",
+      "relevance": "Argyll Top",
+      "height": 1150,
+      "gridRef": "NN143542",
+      "lat": 56.642669,
+      "lon": -5.030014
+    },
+    {
+      "name": "Glas Maol",
+      "relevance": "Angus Top",
+      "height": 1068,
+      "gridRef": "NO166765",
+      "lat": 56.872374,
+      "lon": -3.369841
+    },
+    {
+      "name": "Ben More Assynt",
+      "relevance": "Sutherland Top",
+      "height": 998,
+      "gridRef": "NC318201",
+      "lat": 58.137726,
+      "lon": -4.858685
+    },
+    {
+      "name": "Ben Lomond",
+      "relevance": "Stirlingshire Top",
+      "height": 974,
+      "gridRef": "NN367028",
+      "lat": 56.189734,
+      "lon": -4.633106
+    },
+    {
+      "name": "Ben Vorlich",
+      "relevance": "Dunbartonshire Top",
+      "height": 943,
+      "gridRef": "NN295124",
+      "lat": 56.27336,
+      "lon": -4.755164
+    },
+    {
+      "name": "Goat Fell",
+      "relevance": "Bute Top",
+      "height": 874,
+      "gridRef": "NR991415",
+      "lat": 55.625457,
+      "lon": -5.192492
+    },
+    {
+      "name": "Merrick",
+      "relevance": "Kirkcudbrightshire Top",
+      "height": 843,
+      "gridRef": "NX427855",
+      "lat": 55.1388,
+      "lon": -4.469277
+    },
+    {
+      "name": "Broad Law",
+      "relevance": "Peeblesshire Top",
+      "height": 840,
+      "gridRef": "NT146235",
+      "lat": 55.497794,
+      "lon": -3.353379
+    },
+    {
+      "name": "White Coomb",
+      "relevance": "Dumfriesshire Top",
+      "height": 821,
+      "gridRef": "NT163151",
+      "lat": 55.42263,
+      "lon": -3.323947
+    },
+    {
+      "name": "Kirriereoch Hill (shoulder)",
+      "relevance": "Ayrshire Top",
+      "height": 782,
+      "gridRef": "NX421870",
+      "lat": 55.152075,
+      "lon": -4.479516
+    },
+    {
+      "name": "Mount Battock",
+      "relevance": "Kincardineshire Top",
+      "height": 778,
+      "gridRef": "NO549844",
+      "lat": 56.948647,
+      "lon": -2.743004
+    },
+    {
+      "name": "Culter Fell",
+      "relevance": "Lanarkshire Top",
+      "height": 748,
+      "gridRef": "NT052290",
+      "lat": 55.545461,
+      "lon": -3.504004
+    },
+    {
+      "name": "Dun Rig",
+      "relevance": "Selkirkshire Top",
+      "height": 744,
+      "gridRef": "NT253315",
+      "lat": 55.571416,
+      "lon": -3.186211
+    },
+    {
+      "name": "Cairn Hill West Top",
+      "relevance": "Roxburghshire Top",
+      "height": 743,
+      "gridRef": "NT895193",
+      "lat": 55.46742,
+      "lon": -2.167629
+    },
+    {
+      "name": "Ben Cleuch",
+      "relevance": "Clackmannanshire Top",
+      "height": 721,
+      "gridRef": "NN902006",
+      "lat": 56.185328,
+      "lon": -3.770641
+    },
+    {
+      "name": "Carn a' Ghille Chearr",
+      "relevance": "Moray Top",
+      "height": 710,
+      "gridRef": "NJ139298",
+      "lat": 57.35053,
+      "lon": -3.432479
+    },
+    {
+      "name": "Morven",
+      "relevance": "Caithness Top",
+      "height": 706,
+      "gridRef": "ND004285",
+      "lat": 58.233929,
+      "lon": -3.697846
+    },
+    {
+      "name": "Carn Glas-choire",
+      "relevance": "Nairnshire Top",
+      "height": 659,
+      "gridRef": "NH891291",
+      "lat": 57.338882,
+      "lon": -3.84408
+    },
+    {
+      "name": "Blackhope Scar",
+      "relevance": "Midlothian Top",
+      "height": 651,
+      "gridRef": "NT315483",
+      "lat": 55.723252,
+      "lon": -3.092101
+    },
+    {
+      "name": "West Cairn Hill",
+      "relevance": "West Lothian Top",
+      "height": 562,
+      "gridRef": "NT107584",
+      "lat": 55.810582,
+      "lon": -3.426449
+    },
+    {
+      "name": "Meikle Says Law",
+      "relevance": "East Lothian Top",
+      "height": 535,
+      "gridRef": "NT581617",
+      "lat": 55.846678,
+      "lon": -2.670732
+    },
+    {
+      "name": "Meikle Says Law (shoulder)",
+      "relevance": "Berwickshire Top",
+      "height": 532,
+      "gridRef": "NT581616",
+      "lat": 55.845779,
+      "lon": -2.670716
+    },
+    {
+      "name": "West Lomond",
+      "relevance": "Fife Top",
+      "height": 522,
+      "gridRef": "NO197066",
+      "lat": 56.245113,
+      "lon": -3.29733
+    },
+    {
+      "name": "Hill of Stake",
+      "relevance": "Renfrewshire Top",
+      "height": 522,
+      "gridRef": "NS273630",
+      "lat": 55.829246,
+      "lon": -4.758796
+    },
+    {
+      "name": "Innerdouny Hill",
+      "relevance": "Kinross-shire Top",
+      "height": 497,
+      "gridRef": "NO032073",
+      "lat": 56.248323,
+      "lon": -3.563732
+    },
+    {
+      "name": "Ward Hill",
+      "relevance": "Orkney Top",
+      "height": 481,
+      "gridRef": "HY228022",
+      "lat": 58.900149,
+      "lon": -3.341594
+    },
+    {
+      "name": "Ronas Hill",
+      "relevance": "Shetland Top",
+      "height": 450,
+      "gridRef": "HU305834",
+      "lat": 60.533028,
+      "lon": -1.446063
+    },
+    {
+      "name": "Craigairie Fell",
+      "relevance": "Wigtownshire Top",
+      "height": 322,
+      "gridRef": "NX236736",
+      "lat": 55.025555,
+      "lon": -4.761178
+    }
+  ]
+}

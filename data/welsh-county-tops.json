@@ -1,0 +1,182 @@
+{
+  "collection": "Welsh county tops",
+  "source": "https://en.wikipedia.org/wiki/List_of_Welsh_principal_areas_by_highest_point",
+  "peaks": [
+    {
+      "name": "Snowdon",
+      "relevance": "Gwynedd Top",
+      "height": 1085,
+      "gridRef": "SH609543",
+      "lat": 53.067777,
+      "lon": -4.077474
+    },
+    {
+      "name": "Carnedd Llewelyn",
+      "relevance": "Conwy Top",
+      "height": 1064,
+      "gridRef": "SH683644",
+      "lat": 53.160388,
+      "lon": -3.971252
+    },
+    {
+      "name": "Pen y Fan",
+      "relevance": "Powys Top",
+      "height": 886,
+      "gridRef": "SO011215",
+      "lat": 51.883259,
+      "lon": -3.438294
+    },
+    {
+      "name": "Cadair Berwyn",
+      "relevance": "Denbighshire Top",
+      "height": 830,
+      "gridRef": "SJ071323",
+      "lat": 52.880113,
+      "lon": -3.381906
+    },
+    {
+      "name": "Craig Berwyn",
+      "relevance": "Wrexham Top",
+      "height": 790,
+      "gridRef": "SJ077335",
+      "lat": 52.891,
+      "lon": -3.373334
+    },
+    {
+      "name": "Fan Foel",
+      "relevance": "Carmarthenshire Top",
+      "height": 781,
+      "gridRef": "SN821223",
+      "lat": 51.886751,
+      "lon": -3.714491
+    },
+    {
+      "name": "Plynlimon",
+      "relevance": "Ceredigion Top",
+      "height": 752,
+      "gridRef": "SN789869",
+      "lat": 52.466568,
+      "lon": -3.784048
+    },
+    {
+      "name": "Chwarel y Fan",
+      "relevance": "Monmouthshire Top",
+      "height": 679,
+      "gridRef": "SO259292",
+      "lat": 51.956329,
+      "lon": -3.079723
+    },
+    {
+      "name": "Craig y Llyn",
+      "relevance": "Neath Port Talbot Top",
+      "height": 600,
+      "gridRef": "SN906031",
+      "lat": 51.715925,
+      "lon": -3.584974
+    },
+    {
+      "name": "Craig y Llyn (eastern slopes)",
+      "relevance": "Rhondda Cynon Taf Top",
+      "height": 589,
+      "gridRef": "SN909031",
+      "lat": 51.715983,
+      "lon": -3.580633
+    },
+    {
+      "name": "Coity Mountain",
+      "relevance": "Blaenau Gwent Top",
+      "height": 581,
+      "gridRef": "SO231079",
+      "lat": 51.764478,
+      "lon": -3.115713
+    },
+    {
+      "name": "Coity Mountain (north-eastern slopes)",
+      "relevance": "Torfaen Top",
+      "height": 580,
+      "gridRef": "SO231080",
+      "lat": 51.765377,
+      "lon": -3.115735
+    },
+    {
+      "name": "Mynydd Llangeinwyr",
+      "relevance": "Bridgend Top",
+      "height": 568,
+      "gridRef": "SS912947",
+      "lat": 51.640544,
+      "lon": -3.573673
+    },
+    {
+      "name": "Moel Famau",
+      "relevance": "Flintshire Top",
+      "height": 554,
+      "gridRef": "SJ161626",
+      "lat": 53.153899,
+      "lon": -3.256091
+    },
+    {
+      "name": "Foel Cwmcerwyn",
+      "relevance": "Pembrokeshire Top",
+      "height": 536,
+      "gridRef": "SN094311",
+      "lat": 51.945658,
+      "lon": -4.77461
+    },
+    {
+      "name": "Twyn Pwll Morlais (SE slopes)",
+      "relevance": "Caerphilly Top",
+      "height": 535,
+      "gridRef": "SO082110",
+      "lat": 51.790095,
+      "lon": -3.332383
+    },
+    {
+      "name": "Twyn Pwll Morlais (southern slopes)",
+      "relevance": "Merthyr Tydfil Top",
+      "height": 531,
+      "gridRef": "SO080110",
+      "lat": 51.790063,
+      "lon": -3.335281
+    },
+    {
+      "name": "Mynydd y Gwair",
+      "relevance": "Swansea Top",
+      "height": 374,
+      "gridRef": "SN664094",
+      "lat": 51.76729,
+      "lon": -3.937496
+    },
+    {
+      "name": "Wentwood",
+      "relevance": "Newport Top",
+      "height": 309,
+      "gridRef": "ST411942",
+      "lat": 51.6435,
+      "lon": -2.852603
+    },
+    {
+      "name": "Garth Hill",
+      "relevance": "Cardiff Top",
+      "height": 307,
+      "gridRef": "ST103835",
+      "lat": 51.543242,
+      "lon": -3.294875
+    },
+    {
+      "name": "Holyhead Mountain",
+      "relevance": "Isle of Anglesey Top",
+      "height": 220,
+      "gridRef": "SH218829",
+      "lat": 53.312966,
+      "lon": -4.676369
+    },
+    {
+      "name": "Unnamed hill SE of Pantylladron",
+      "relevance": "Vale of Glamorgan Top",
+      "height": 137,
+      "gridRef": "ST036739",
+      "lat": 51.455843,
+      "lon": -3.388834
+    }
+  ]
+}

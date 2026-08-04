@@ -6,20 +6,11 @@
   let activeDetailId = null;
   let map = null;
   let markers = new Map(); // id -> Leaflet marker
+  let pendingDbImport = null; // parsed peaks array awaiting overwrite/merge choice
 
   const el = (id) => document.getElementById(id);
 
   // ---------- Utilities ----------
-
-  function haversineKm(lat1, lon1, lat2, lon2) {
-    const R = 6371;
-    const dLat = ((lat2 - lat1) * Math.PI) / 180;
-    const dLon = ((lon2 - lon1) * Math.PI) / 180;
-    const a =
-      Math.sin(dLat / 2) ** 2 +
-      Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLon / 2) ** 2;
-    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  }
 
   function formatDateTimeLocalInput(date) {
     const pad = (n) => String(n).padStart(2, '0');
@@ -32,11 +23,27 @@
     return d.toLocaleString(undefined, { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
   }
 
+  function googleMapsUrl(lat, lon) {
+    return `https://www.google.com/maps?q=${lat},${lon}`;
+  }
+
+  function osMapsUrl(lat, lon) {
+    return `https://osmaps.ordnancesurvey.co.uk/${lat},${lon},17`;
+  }
+
+  function parseCollectionsInput(text) {
+    return text
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
+  }
+
   // ---------- Data loading ----------
 
   async function loadPeaks() {
     peaks = await PeaksDB.getAll();
     renderCount();
+    renderCollectionOptions();
     renderList();
     renderMapMarkers();
   }
@@ -46,15 +53,31 @@
     el('peak-count').textContent = `${visited}/${peaks.length} visited`;
   }
 
+  function renderCollectionOptions() {
+    const sel = el('collection-select');
+    const current = sel.value || 'all';
+    const names = Array.from(new Set(peaks.flatMap((p) => p.collections || []))).sort((a, b) => a.localeCompare(b));
+    sel.innerHTML = '<option value="all">All collections</option>';
+    names.forEach((name) => {
+      const opt = document.createElement('option');
+      opt.value = name;
+      opt.textContent = name;
+      sel.appendChild(opt);
+    });
+    if (names.includes(current)) sel.value = current;
+  }
+
   // ---------- List view ----------
 
   function getFilteredSortedPeaks() {
     const sortBy = el('sort-select').value;
     const filterBy = el('filter-select').value;
+    const collectionBy = el('collection-select').value;
 
     let list = peaks.slice();
     if (filterBy === 'visited') list = list.filter((p) => p.visited);
     if (filterBy === 'unvisited') list = list.filter((p) => !p.visited);
+    if (collectionBy !== 'all') list = list.filter((p) => (p.collections || []).includes(collectionBy));
 
     if (sortBy === 'name') {
       list.sort((a, b) => a.name.localeCompare(b.name));
@@ -72,7 +95,7 @@
     } else if (sortBy === 'distance') {
       if (userLocation) {
         list.forEach((p) => {
-          p._distance = p.lat != null && p.lon != null ? haversineKm(userLocation.lat, userLocation.lon, p.lat, p.lon) : Infinity;
+          p._distance = p.lat != null && p.lon != null ? OSGB.haversineKm(userLocation.lat, userLocation.lon, p.lat, p.lon) : Infinity;
         });
         list.sort((a, b) => a._distance - b._distance);
       } else {
@@ -166,18 +189,33 @@
     if (!peak) return;
     activeDetailId = id;
 
-    el('d-name').textContent = peak.name;
-    el('d-relevance').textContent = peak.relevance || '';
-    el('d-height').textContent = peak.height != null ? `${peak.height} m` : '—';
-    el('d-gridref').textContent = peak.gridRef || '—';
-    el('d-latlon').textContent = peak.lat != null && peak.lon != null ? `${peak.lat.toFixed(5)}, ${peak.lon.toFixed(5)}` : '—';
+    el('d-name').value = peak.name || '';
+    el('d-relevance').value = peak.relevance || '';
+    el('d-height').value = peak.height != null ? peak.height : '';
+    el('d-gridref').value = peak.gridRef || '';
+    el('d-lat').value = peak.lat != null ? peak.lat : '';
+    el('d-lon').value = peak.lon != null ? peak.lon : '';
+    el('d-collections').value = (peak.collections || []).join(', ');
     el('d-status').textContent = peak.visited ? `Visited ${formatDisplayDate(peak.visitedAt)}` : 'Not visited';
     el('d-notes').value = peak.notes || '';
     el('d-visited').checked = !!peak.visited;
     el('d-visitedat').value = peak.visitedAt ? formatDateTimeLocalInput(new Date(peak.visitedAt)) : formatDateTimeLocalInput(new Date());
     toggleVisitedAtVisibility('d-visited', 'd-visitedat-wrap');
+    updateDetailMapLinks();
 
     el('detail-sheet').classList.remove('hidden');
+  }
+
+  function updateDetailMapLinks() {
+    const lat = el('d-lat').value ? Number(el('d-lat').value) : null;
+    const lon = el('d-lon').value ? Number(el('d-lon').value) : null;
+    const googleLink = el('d-google-maps-link');
+    const osLink = el('d-os-maps-link');
+    const hasCoords = lat != null && lon != null && !Number.isNaN(lat) && !Number.isNaN(lon);
+    googleLink.classList.toggle('disabled', !hasCoords);
+    osLink.classList.toggle('disabled', !hasCoords);
+    googleLink.href = hasCoords ? googleMapsUrl(lat, lon) : '#';
+    osLink.href = hasCoords ? osMapsUrl(lat, lon) : '#';
   }
 
   function closeDetail() {
@@ -189,9 +227,30 @@
     el(wrapId).classList.toggle('hidden', !el(checkboxId).checked);
   }
 
+  function recalcDetailLatLon() {
+    const gridRef = el('d-gridref').value.trim();
+    if (!gridRef) return;
+    const coords = window.OSGB.gridRefToLatLon(gridRef);
+    if (coords) {
+      el('d-lat').value = coords.lat.toFixed(6);
+      el('d-lon').value = coords.lon.toFixed(6);
+      updateDetailMapLinks();
+    }
+  }
+
   async function saveDetail() {
     const peak = peaks.find((p) => p.id === activeDetailId);
     if (!peak) return;
+    const name = el('d-name').value.trim();
+    if (!name) return;
+
+    peak.name = name;
+    peak.relevance = el('d-relevance').value.trim();
+    peak.height = el('d-height').value ? Number(el('d-height').value) : null;
+    peak.gridRef = el('d-gridref').value.trim() || null;
+    peak.lat = el('d-lat').value ? Number(el('d-lat').value) : null;
+    peak.lon = el('d-lon').value ? Number(el('d-lon').value) : null;
+    peak.collections = parseCollectionsInput(el('d-collections').value);
     peak.notes = el('d-notes').value;
     peak.visited = el('d-visited').checked;
     peak.visitedAt = peak.visited ? new Date(el('d-visitedat').value).toISOString() : null;
@@ -237,6 +296,7 @@
       gridRef: gridRef || null,
       lat,
       lon,
+      collections: parseCollectionsInput(el('f-collections').value),
       notes: el('f-notes').value.trim(),
       visited,
       visitedAt: visited ? new Date(el('f-visitedat').value).toISOString() : null,
@@ -272,7 +332,8 @@
     markers.forEach((m) => map.removeLayer(m));
     markers.clear();
 
-    peaks.forEach((peak) => {
+    const visible = getFilteredSortedPeaks();
+    visible.forEach((peak) => {
       if (peak.lat == null || peak.lon == null) return;
       const marker = L.circleMarker([peak.lat, peak.lon], {
         radius: 8,
@@ -283,8 +344,9 @@
       }).addTo(map);
 
       const statusText = peak.visited ? `Visited ${formatDisplayDate(peak.visitedAt)}` : 'Not visited';
+      const mapLinks = `<a href="${googleMapsUrl(peak.lat, peak.lon)}" target="_blank" rel="noopener">Google Maps</a> &middot; <a href="${osMapsUrl(peak.lat, peak.lon)}" target="_blank" rel="noopener">OS Maps</a>`;
       marker.bindPopup(
-        `<strong>${escapeHtml(peak.name)}</strong><br>${escapeHtml(peak.relevance || '')}<br>${peak.height != null ? peak.height + ' m' : ''}<br>${statusText}<br><button data-open-id="${peak.id}" class="popup-open-btn">Details</button>`
+        `<strong>${escapeHtml(peak.name)}</strong><br>${escapeHtml(peak.relevance || '')}<br>${peak.height != null ? peak.height + ' m' : ''}<br>${statusText}<br>${mapLinks}<br><button data-open-id="${peak.id}" class="popup-open-btn">Details</button>`
       );
       marker.on('popupopen', () => {
         const btn = document.querySelector(`[data-open-id="${peak.id}"]`);
@@ -298,6 +360,100 @@
     const d = document.createElement('div');
     d.textContent = str;
     return d.innerHTML;
+  }
+
+  // ---------- Data: export ----------
+
+  async function exportDatabase() {
+    const data = await PeaksDB.exportDatabase();
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const stamp = new Date().toISOString().slice(0, 10);
+    a.href = url;
+    a.download = `peaks-backup-${stamp}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  // ---------- Data: import database (overwrite / merge) ----------
+
+  function readFileAsJson(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          resolve(JSON.parse(reader.result));
+        } catch (err) {
+          reject(err);
+        }
+      };
+      reader.onerror = () => reject(reader.error);
+      reader.readAsText(file);
+    });
+  }
+
+  async function handleImportDbFileChange(evt) {
+    const file = evt.target.files[0];
+    if (!file) return;
+    const statusEl = el('import-db-status');
+    statusEl.textContent = '';
+    try {
+      const data = await readFileAsJson(file);
+      const importPeaks = Array.isArray(data) ? data : data.peaks;
+      if (!Array.isArray(importPeaks)) throw new Error('No peaks array found in file');
+      pendingDbImport = importPeaks;
+      el('import-db-count').textContent = importPeaks.length;
+      el('import-db-choice').classList.remove('hidden');
+    } catch (err) {
+      statusEl.textContent = `Could not read that file: ${err.message}`;
+      pendingDbImport = null;
+    }
+  }
+
+  function cancelDbImport() {
+    pendingDbImport = null;
+    el('import-db-choice').classList.add('hidden');
+    el('import-db-file').value = '';
+  }
+
+  async function runDbImport(mode) {
+    if (!pendingDbImport) return;
+    const statusEl = el('import-db-status');
+    const result = await PeaksDB.importDatabase(pendingDbImport, mode);
+    el('import-db-choice').classList.add('hidden');
+    el('import-db-file').value = '';
+    pendingDbImport = null;
+    statusEl.textContent =
+      mode === 'overwrite'
+        ? `Database overwritten with ${result.added} peaks.`
+        : `Merged: ${result.added} new peaks added, ${result.merged} matched existing peaks.`;
+    await loadPeaks();
+  }
+
+  // ---------- Data: import a collection ----------
+
+  async function handleImportCollectionFileChange(evt) {
+    const file = evt.target.files[0];
+    if (!file) return;
+    const statusEl = el('import-collection-status');
+    statusEl.textContent = '';
+    try {
+      const data = await readFileAsJson(file);
+      const collectionName = data.collection;
+      const collectionPeaks = data.peaks;
+      if (!collectionName || !Array.isArray(collectionPeaks)) {
+        throw new Error('Expected an object with "collection" and "peaks" fields');
+      }
+      const result = await PeaksDB.importCollection(collectionName, collectionPeaks);
+      statusEl.textContent = `Imported "${collectionName}": ${result.added} new peaks added, ${result.merged} matched peaks you already have.`;
+      el('import-collection-file').value = '';
+      await loadPeaks();
+    } catch (err) {
+      statusEl.textContent = `Could not import that file: ${err.message}`;
+    }
   }
 
   // ---------- View switching ----------
@@ -316,7 +472,7 @@
   // ---------- Init ----------
 
   async function init() {
-    await PeaksDB.ensureSeeded();
+    await PeaksDB.ensureDefaultCollectionsSeeded();
     await loadPeaks();
 
     document.querySelectorAll('.tab-btn').forEach((btn) => {
@@ -324,11 +480,21 @@
     });
 
     el('sort-select').addEventListener('change', renderList);
-    el('filter-select').addEventListener('change', renderList);
+    el('filter-select').addEventListener('change', () => {
+      renderList();
+      renderMapMarkers();
+    });
+    el('collection-select').addEventListener('change', () => {
+      renderList();
+      renderMapMarkers();
+    });
 
     el('sheet-close').addEventListener('click', closeDetail);
     el('d-save').addEventListener('click', saveDetail);
     el('d-delete').addEventListener('click', deleteActivePeak);
+    el('d-recalc').addEventListener('click', recalcDetailLatLon);
+    el('d-lat').addEventListener('input', updateDetailMapLinks);
+    el('d-lon').addEventListener('input', updateDetailMapLinks);
     el('d-visited').addEventListener('change', () => toggleVisitedAtVisibility('d-visited', 'd-visitedat-wrap'));
 
     el('add-form').addEventListener('submit', handleAddSubmit);
@@ -336,6 +502,13 @@
     el('f-use-location').addEventListener('click', useCurrentLocationForForm);
     el('f-visitedat').value = formatDateTimeLocalInput(new Date());
     toggleVisitedAtVisibility('f-visited', 'f-visitedat-wrap');
+
+    el('export-db-btn').addEventListener('click', exportDatabase);
+    el('import-db-file').addEventListener('change', handleImportDbFileChange);
+    el('import-db-merge').addEventListener('click', () => runDbImport('merge'));
+    el('import-db-overwrite').addEventListener('click', () => runDbImport('overwrite'));
+    el('import-db-cancel').addEventListener('click', cancelDbImport);
+    el('import-collection-file').addEventListener('change', handleImportCollectionFileChange);
   }
 
   document.addEventListener('DOMContentLoaded', init);
