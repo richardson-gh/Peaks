@@ -211,16 +211,28 @@
     return { added, merged };
   }
 
+  // Import one of the collections bundled with the app (data/*.json) by
+  // name, with no file upload needed.
+  async function importBundledCollection(name) {
+    const entry = DEFAULT_COLLECTIONS.find((c) => c.name === name);
+    if (!entry) throw new Error(`Unknown bundled collection: ${name}`);
+    const res = await fetch(entry.file);
+    if (!res.ok) throw new Error(`Could not load ${entry.file}`);
+    const data = await res.json();
+    return importCollection(data.collection || entry.name, data.peaks || []);
+  }
+
+  function listBundledCollections() {
+    return DEFAULT_COLLECTIONS.map((c) => ({ ...c }));
+  }
+
   async function ensureDefaultCollectionsSeeded() {
     const existing = await getAll();
     const known = new Set(existing.flatMap((p) => p.collections || []));
-    for (const { name, file } of DEFAULT_COLLECTIONS) {
+    for (const { name } of DEFAULT_COLLECTIONS) {
       if (known.has(name)) continue;
       try {
-        const res = await fetch(file);
-        if (!res.ok) continue;
-        const data = await res.json();
-        await importCollection(data.collection || name, data.peaks || []);
+        await importBundledCollection(name);
       } catch (err) {
         console.error(`Failed to load default collection "${name}"`, err);
       }
@@ -296,6 +308,8 @@
     remove,
     clear,
     importCollection,
+    importBundledCollection,
+    listBundledCollections,
     ensureDefaultCollectionsSeeded,
     exportDatabase,
     importDatabase,

@@ -253,6 +253,28 @@ main.view-active { display: flex; flex-direction: column; }
 }
 .import-choice p { margin: 0; font-size: 0.85rem; color: var(--text-muted); }
 
+.bundled-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.bundled-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+.bundled-name { font-weight: 600; }
+.bundled-item .hint { margin: 2px 0 0; }
+.bundled-item .btn-secondary { padding: 8px 14px; flex: 0 0 auto; }
+
 .tab-bar {
   position: fixed;
   bottom: 0;

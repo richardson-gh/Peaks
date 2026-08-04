@@ -46,6 +46,7 @@
     renderCollectionOptions();
     renderList();
     renderMapMarkers();
+    renderBundledCollections();
   }
 
   function renderCount() {
@@ -360,6 +361,56 @@
     const d = document.createElement('div');
     d.textContent = str;
     return d.innerHTML;
+  }
+
+  // ---------- Data: bundled collections (no upload needed) ----------
+
+  function renderBundledCollections() {
+    const listEl = el('bundled-collections-list');
+    if (!listEl) return;
+    const known = new Set(peaks.flatMap((p) => p.collections || []));
+    const bundled = PeaksDB.listBundledCollections();
+    listEl.innerHTML = '';
+
+    bundled.forEach(({ name }) => {
+      const li = document.createElement('li');
+      li.className = 'bundled-item';
+
+      const info = document.createElement('div');
+      info.className = 'bundled-info';
+      const title = document.createElement('div');
+      title.className = 'bundled-name';
+      title.textContent = name;
+      const status = document.createElement('div');
+      status.className = 'hint';
+      status.textContent = known.has(name) ? 'Already in your database' : 'Not yet added';
+      info.appendChild(title);
+      info.appendChild(status);
+
+      li.dataset.collectionName = name;
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'btn-secondary';
+      btn.textContent = known.has(name) ? 'Re-import' : 'Import';
+      btn.addEventListener('click', () => importBundled(name));
+
+      li.appendChild(info);
+      li.appendChild(btn);
+      listEl.appendChild(li);
+    });
+  }
+
+  async function importBundled(name) {
+    let message;
+    try {
+      const result = await PeaksDB.importBundledCollection(name);
+      message = `${result.added} new peaks added, ${result.merged} matched peaks you already have.`;
+    } catch (err) {
+      message = `Could not import: ${err.message}`;
+    }
+    await loadPeaks();
+    const row = document.querySelector(`.bundled-item[data-collection-name="${CSS.escape(name)}"]`);
+    if (row) row.querySelector('.hint').textContent = message;
   }
 
   // ---------- Data: export ----------
