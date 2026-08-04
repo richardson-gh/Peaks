@@ -161,9 +161,25 @@
     };
   }
 
+  // Combine two relevance labels (e.g. "Kent Top" + "Greater London Top" ->
+  // "Kent Top; Greater London Top"), skipping blanks and exact duplicates.
+  function mergeRelevance(existingRelevance, incomingRelevance) {
+    const existingParts = (existingRelevance || '')
+      .split(';')
+      .map((s) => s.trim())
+      .filter(Boolean);
+    const incomingTrimmed = (incomingRelevance || '').trim();
+    if (!incomingTrimmed) return existingRelevance || '';
+    if (existingParts.some((p) => p.toLowerCase() === incomingTrimmed.toLowerCase())) {
+      return existingRelevance || '';
+    }
+    return existingParts.length ? `${existingParts.join('; ')}; ${incomingTrimmed}` : incomingTrimmed;
+  }
+
   // Merge a collection's peaks into the database: peaks matching an existing
-  // summit get the collection name added to their `collections` array;
-  // unmatched peaks are inserted as new records. Always additive.
+  // summit get the collection name added to their `collections` array (and
+  // their relevance label joined on, if different); unmatched peaks are
+  // inserted as new records. Always additive.
   async function importCollection(collectionName, peaksArray) {
     const existing = await getAll();
     let added = 0;
@@ -172,10 +188,17 @@
       const match = findMatch(existing, incoming);
       if (match) {
         match.collections = Array.isArray(match.collections) ? match.collections : [];
+        let changed = false;
         if (!match.collections.includes(collectionName)) {
           match.collections.push(collectionName);
-          await put(match);
+          changed = true;
         }
+        const mergedRelevance = mergeRelevance(match.relevance, incoming.relevance);
+        if (mergedRelevance !== match.relevance) {
+          match.relevance = mergedRelevance;
+          changed = true;
+        }
+        if (changed) await put(match);
         merged++;
       } else {
         const newPeak = normalizeNewPeak(incoming, [collectionName]);
@@ -236,6 +259,11 @@
             match.collections.push(c);
             changed = true;
           }
+        }
+        const mergedRelevance = mergeRelevance(match.relevance, incoming.relevance);
+        if (mergedRelevance !== match.relevance) {
+          match.relevance = mergedRelevance;
+          changed = true;
         }
         if (!match.visited && incoming.visited) {
           match.visited = true;
