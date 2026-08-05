@@ -193,9 +193,12 @@ main.view-active { display: flex; flex-direction: column; }
   background: var(--surface);
   color: var(--text);
   font-family: inherit;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
-.form-row { display: flex; gap: 10px; }
-.form-row .form-field { flex: 1; }
+.form-row { display: flex; gap: 10px; min-width: 0; }
+.form-row .form-field { flex: 1; min-width: 0; }
 
 .form-check {
   display: flex;

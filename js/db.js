@@ -11,7 +11,7 @@
   'use strict';
 
   const DB_NAME = 'peaks-db';
-  const DB_VERSION = 2;
+  const DB_VERSION = 3;
   const STORE = 'peaks';
 
   const DEFAULT_COLLECTIONS = [
@@ -40,18 +40,27 @@
         } else {
           store = tx.objectStore(STORE);
         }
-        if (event.oldVersion < 2) {
-          // Legacy (pre-collections) records: assume they came from the
-          // original single default collection.
+        if (event.oldVersion < 3) {
           const cursorReq = store.openCursor();
           cursorReq.onsuccess = (e) => {
             const cursor = e.target.result;
             if (!cursor) return;
             const rec = cursor.value;
+            let changed = false;
+            // Legacy (pre-collections) records: assume they came from the
+            // original single default collection.
             if (!Array.isArray(rec.collections)) {
               rec.collections = ['English county tops'];
-              cursor.update(rec);
+              changed = true;
             }
+            // Legacy records predating per-collection relevance tracking:
+            // attribute their current relevance string to their first
+            // collection, so a later collection deletion can clean it up.
+            if (!rec.relevanceByCollection) {
+              rec.relevanceByCollection = rec.collections.length > 0 && rec.relevance ? { [rec.collections[0]]: rec.relevance } : {};
+              changed = true;
+            }
+            if (changed) cursor.update(rec);
             cursor.continue();
           };
         }
@@ -132,8 +141,20 @@
     );
   }
 
+  // The relevance label shown for a peak is derived from whichever
+  // collections contributed to it, so removing a collection also removes
+  // its label rather than leaving stale text behind.
+  function computeRelevance(peak) {
+    const map = peak.relevanceByCollection;
+    if (map && Object.keys(map).length > 0) {
+      return Object.values(map).filter(Boolean).join('; ');
+    }
+    return peak.relevance || '';
+  }
+
   // Remove a collection: peaks that belong only to it are deleted; peaks
-  // that also belong to other collections just lose this collection's tag.
+  // that also belong to other collections just lose this collection's tag
+  // (and its contribution to the relevance label).
   async function deleteCollection(name) {
     const all = await getAll();
     let deleted = 0;
@@ -146,6 +167,10 @@
         deleted++;
       } else {
         peak.collections = remaining;
+        if (peak.relevanceByCollection && Object.prototype.hasOwnProperty.call(peak.relevanceByCollection, name)) {
+          delete peak.relevanceByCollection[name];
+          peak.relevance = computeRelevance(peak);
+        }
         await put(peak);
         updated++;
       }
@@ -181,28 +206,15 @@
       visited: !!raw.visited,
       visitedAt: raw.visited && raw.visitedAt ? raw.visitedAt : null,
       collections: collections,
+      relevanceByCollection: raw.relevanceByCollection || {},
     };
   }
 
-  // Combine two relevance labels (e.g. "Kent Top" + "Greater London Top" ->
-  // "Kent Top; Greater London Top"), skipping blanks and exact duplicates.
-  function mergeRelevance(existingRelevance, incomingRelevance) {
-    const existingParts = (existingRelevance || '')
-      .split(';')
-      .map((s) => s.trim())
-      .filter(Boolean);
-    const incomingTrimmed = (incomingRelevance || '').trim();
-    if (!incomingTrimmed) return existingRelevance || '';
-    if (existingParts.some((p) => p.toLowerCase() === incomingTrimmed.toLowerCase())) {
-      return existingRelevance || '';
-    }
-    return existingParts.length ? `${existingParts.join('; ')}; ${incomingTrimmed}` : incomingTrimmed;
-  }
-
   // Merge a collection's peaks into the database: peaks matching an existing
-  // summit get the collection name added to their `collections` array (and
-  // their relevance label joined on, if different); unmatched peaks are
-  // inserted as new records. Always additive.
+  // summit get the collection name added to their `collections` array, and
+  // its relevance label recorded under that collection's key (so deleting
+  // the collection later can remove just its own contribution); unmatched
+  // peaks are inserted as new records. Always additive.
   async function importCollection(collectionName, peaksArray) {
     const existing = await getAll();
     let added = 0;
@@ -211,20 +223,26 @@
       const match = findMatch(existing, incoming);
       if (match) {
         match.collections = Array.isArray(match.collections) ? match.collections : [];
+        match.relevanceByCollection = match.relevanceByCollection || {};
         let changed = false;
         if (!match.collections.includes(collectionName)) {
           match.collections.push(collectionName);
           changed = true;
         }
-        const mergedRelevance = mergeRelevance(match.relevance, incoming.relevance);
-        if (mergedRelevance !== match.relevance) {
-          match.relevance = mergedRelevance;
+        if (incoming.relevance && match.relevanceByCollection[collectionName] !== incoming.relevance) {
+          match.relevanceByCollection[collectionName] = incoming.relevance;
+          changed = true;
+        }
+        const newRelevance = computeRelevance(match);
+        if (newRelevance !== match.relevance) {
+          match.relevance = newRelevance;
           changed = true;
         }
         if (changed) await put(match);
         merged++;
       } else {
         const newPeak = normalizeNewPeak(incoming, [collectionName]);
+        newPeak.relevanceByCollection = incoming.relevance ? { [collectionName]: incoming.relevance } : {};
         const id = await add(newPeak);
         newPeak.id = id;
         existing.push(newPeak);
@@ -282,9 +300,17 @@
             changed = true;
           }
         }
-        const mergedRelevance = mergeRelevance(match.relevance, incoming.relevance);
-        if (mergedRelevance !== match.relevance) {
-          match.relevance = mergedRelevance;
+        match.relevanceByCollection = match.relevanceByCollection || {};
+        const incomingMap = incoming.relevanceByCollection || {};
+        for (const [key, val] of Object.entries(incomingMap)) {
+          if (val && match.relevanceByCollection[key] !== val) {
+            match.relevanceByCollection[key] = val;
+            changed = true;
+          }
+        }
+        const newRelevance = computeRelevance(match);
+        if (newRelevance !== match.relevance) {
+          match.relevance = newRelevance;
           changed = true;
         }
         if (!match.visited && incoming.visited) {
@@ -318,6 +344,7 @@
     remove,
     clear,
     deleteCollection,
+    computeRelevance,
     importCollection,
     importBundledCollection,
     listBundledCollections,

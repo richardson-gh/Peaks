@@ -295,13 +295,30 @@
     const name = el('d-name').value.trim();
     if (!name) return;
 
+    const previousComputedRelevance = PeaksDB.computeRelevance(peak);
+    const newRelevance = el('d-relevance').value.trim();
+    const newCollections = parseCollectionsInput(el('d-collections').value);
+
+    // Keep relevance provenance in sync: drop entries for collections no
+    // longer present, and if the relevance text itself was hand-edited,
+    // stop tracking provenance for it so a future collection deletion
+    // doesn't touch text the user now owns directly.
+    if (peak.relevanceByCollection) {
+      for (const key of Object.keys(peak.relevanceByCollection)) {
+        if (!newCollections.includes(key)) delete peak.relevanceByCollection[key];
+      }
+    }
+    if (newRelevance !== previousComputedRelevance) {
+      peak.relevanceByCollection = {};
+    }
+
     peak.name = name;
-    peak.relevance = el('d-relevance').value.trim();
+    peak.relevance = newRelevance;
     peak.height = el('d-height').value ? Number(el('d-height').value) : null;
     peak.gridRef = el('d-gridref').value.trim() || null;
     peak.lat = el('d-lat').value ? Number(el('d-lat').value) : null;
     peak.lon = el('d-lon').value ? Number(el('d-lon').value) : null;
-    peak.collections = parseCollectionsInput(el('d-collections').value);
+    peak.collections = newCollections;
     peak.notes = el('d-notes').value;
     peak.visited = el('d-visited').checked;
     peak.visitedAt = peak.visited ? new Date(el('d-visitedat').value).toISOString() : null;
